@@ -2,47 +2,31 @@ version: "3.2"
 
 services:
 
-  nginx:
-    image: nginx:latest
-    userns_mode: "host"
-    container_name: ${D_PROJECT_NAME}_nginx
-    env_file:
-      - .env
-    ports:
-      - 80:80
-    links:
-      - php
-    depends_on:
-      - php
-    volumes:
-      - ./docker/Nginx/start.sh:/home/scripts/start.sh
-      - ./docker/Nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/Nginx/ps.conf.tpl:/etc/nginx/conf.d/default.conf.tpl
-      - ./docker/Nginx/tools.conf.tpl:/etc/nginx/conf.d/tools.conf.tpl
-      - ${D_SOURCE_DIR}:/var/www/html
-    entrypoint: /home/scripts/start.sh
-
   php:
+    restart: always
     build:
       context: ./docker
       args:
         USER_NAME: ${D_PROJECT_NAME}_php
         USER_ID: ${D_USER_ID}
-        VERSION: ${PHP_VERSION}-fpm
+        VERSION: ${PHP_VERSION}-apache
         PHP_VERSION: ${PHP_VERSION}
     userns_mode: "host"
     container_name: ${D_PROJECT_NAME}_php
     user: "${D_USER_ID}:${D_GROUP_ID}"
     ports:
-      - 8080:80
+      - 80:80
     links:
       - db
     volumes:
-      - ./docker/PHP/docker-php.ini:/usr/local/etc/php/conf.d/docker-php.ini
+      - ./docker/PHP/docker-php.ini:/usr/local/etc/php/conf.d/php.ini
       - ${D_SOURCE_DIR}:/var/www/html
       - .composer:/home/${D_PROJECT_NAME}_php/.composer
+      - ./logs/error.log:/var/log/apache2/error.log
+      - ./logs/access.log:/var/log/apache2/access.log
 
   mailhog:
+    restart: always
     container_name: ${D_PROJECT_NAME}_mailhog
     image: mailhog/mailhog
     ports:
@@ -50,6 +34,7 @@ services:
       - 8025:8025
 
   db:
+    restart: always
     image: mysql:5.6
     userns_mode: "host"
     container_name: ${D_PROJECT_NAME}_db
@@ -66,6 +51,7 @@ services:
       - TERM=meh
 
   phpmyadmin:
+    restart: always
     container_name: ${D_PROJECT_NAME}_pma
     image: phpmyadmin/phpmyadmin
     links:
