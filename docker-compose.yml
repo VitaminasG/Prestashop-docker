@@ -28,7 +28,7 @@ services:
       args:
         USER_NAME: ${D_PROJECT_NAME}_php
         USER_ID: ${D_USER_ID}
-        VERSION: ${PHP_VERSION}-apache
+        VERSION: ${PHP_VERSION}-fpm
         PHP_VERSION: ${PHP_VERSION}
     userns_mode: "host"
     container_name: ${D_PROJECT_NAME}_php
