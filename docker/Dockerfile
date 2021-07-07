@@ -21,22 +21,6 @@ COPY install.sh ./install.sh
 
 RUN bash ./install.sh $PHP_VERSION
 
-## Install Xdebug
-RUN BEFORE_PWD=$(pwd) \
-    && mkdir -p /opt/xdebug \
-    && cd /opt/xdebug \
-    && curl -k -L https://github.com/xdebug/xdebug/archive/XDEBUG_2_5_5.tar.gz | tar zx \
-    && cd xdebug-XDEBUG_2_5_5 \
-    && phpize \
-    && ./configure --enable-xdebug \
-    && make clean \
-    && sed -i 's/-O2/-O0/g' Makefile \
-    && make \
-    # && make test \
-    && make install \
-    && cd "${BEFORE_PWD}" \
-    && rm -r /opt/xdebug
-RUN docker-php-ext-enable xdebug
 COPY ./PHP/docker-php.ini /usr/local/etc/php/php.ini
 
 COPY ./Apache/configs/apache2.conf ${APACHE_CONF_DIR}/apache2.conf
