@@ -29,7 +29,7 @@ docker-php-ext-install -j$(nproc) iconv pdo_mysql bcmath xml xsl mbstring soap j
 docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 docker-php-ext-install -j$(nproc) gd
 
-curl -sL 'https://deb.nodesource.com/setup_10.x' | bash
+curl -sL 'https://deb.nodesource.com/setup_12.x' | bash
 apt-get install --yes nodejs
 npm install -g grunt-cli
 

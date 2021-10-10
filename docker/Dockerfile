@@ -24,7 +24,7 @@ RUN bash ./install.sh $PHP_VERSION
 COPY ./PHP/docker-php.ini /usr/local/etc/php/php.ini
 
 COPY ./Apache/configs/apache2.conf ${APACHE_CONF_DIR}/apache2.conf
-COPY ./Apache/configs/app.conf ${APACHE_CONF_DIR}/sites-enabled/app.conf
+COPY ./Apache/configs/localhost.conf ${APACHE_CONF_DIR}/sites-enabled/localhost.conf
 COPY ./Apache/configs/php.ini  ${PHP_CONF_DIR}/apache2/conf.d/custom.ini
 
 RUN useradd -r -u $USER_ID -ms /bin/bash $USER_NAME
@@ -34,6 +34,3 @@ WORKDIR /home/$USER_NAME
 EXPOSE 80 81 443
 
 RUN echo 'cd /var/www/html' >> ~/.bashrc
-
-## Launch Apache
-CMD ["/usr/sbin/apache2", "-DFOREGROUND"]
